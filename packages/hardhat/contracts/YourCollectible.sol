@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+/// @title ERC721-compliant NFT Contract 
+/// @author Austin Griffith
+
 contract YourCollectible is
     ERC721,
     ERC721Enumerable,
@@ -19,10 +22,14 @@ contract YourCollectible is
 
     constructor() ERC721("YourCollectible", "YCB") {}
 
+    /// @notice pure internal function to return ipfs link
+    /// @return ipfs link for upload/download
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
     }
 
+    /// @notice function to mint NFT to minter address
+    /// @return tokenId representing NFT id number
     function mintItem(address to, string memory uri) public returns (uint256) {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
