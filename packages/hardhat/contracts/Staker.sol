@@ -21,8 +21,8 @@ contract Staker {
   // Stake threshold (eth)
   uint public constant threshold = 1 ether;
 
-  // Stake deadline (days)
-  uint public constant deadline = 2;
+  // Stake deadline
+  uint256 public deadline = block.timestamp + 30 minutes;
 
   // Contract's Events
   event Stake(address indexed sender, uint256 amount);
@@ -33,6 +33,7 @@ contract Staker {
   */
   constructor(address exampleExternalContractAddress) {
       
+      exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
   }
 
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
@@ -47,7 +48,11 @@ contract Staker {
 
   // After some `deadline` allow anyone to call an `execute()` function
   // If the deadline has passed and the threshold is met, it should call `exampleExternalContract.complete{value: address(this).balance}()`
-
+  function execute() public {
+    assert(block.timestamp > deadline);
+    assert(address(this).balance >= threshold);
+    exampleExternalContract.complete{value: address(this).balance}();
+  }
 
   // If the `threshold` was not met, allow everyone to call a `withdraw()` function
 
@@ -56,7 +61,10 @@ contract Staker {
 
 
   // Add a `timeLeft()` view function that returns the time left before the deadline for the frontend
-
+  function timeLeft() public view returns (uint256){
+    if (block.timestamp >= deadline) return 0;
+    return deadline - block.timestamp;
+  }
 
   // Add the `receive()` special function that receives eth and calls stake()
 
