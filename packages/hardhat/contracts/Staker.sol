@@ -3,7 +3,6 @@ pragma solidity ^ 0.8.4;
 
 import "hardhat/console.sol";
 import "./ExampleExternalContract.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 /**
 * @title Contract for staking
@@ -83,15 +82,29 @@ contract Staker {
   // After some `deadline` allow anyone to call an `execute()` function
   // If the deadline has passed and the threshold is met, it should call `exampleExternalContract.complete{value: address(this).balance}()`
   function execute() public deadlineReached(true) thresholdReached(true) {
-    exampleExternalContract.complete{value: address(this).balance}();
+    // Execute the external contract, transfer all the balance to the contract
+    // (bool sent, bytes memory data) = exampleExternalContract.complete{value: contractBalance}();
+    (bool sent,) = address(exampleExternalContract).call{value: address(this).balance}(abi.encodeWithSignature("complete()"));
+    require(sent, "exampleExternalContract.complete failed");
   }
 
   // If the `threshold` was not met, allow everyone to call a `withdraw()` function
 
+  /**
+  * @notice Allow user to withdraw all fund giving stake not completed but the deadline has passed
+  */
   // Add a `withdraw()` function to let users withdraw their balance
-  function withdraw() public deadlineReached(true) thresholdReached(false) {
+  function withdraw() public deadlineReached(true) thresholdReached(false) stakeNotCompleted {
+    uint userBalance = balances[msg.sender];
+    require(userBalance > 0, "you stake balance is empty");
+    balances[msg.sender] = 0;
 
+    // Transfer balance back to the user
+    (bool sent,) = msg.sender.call{value: userBalance}("");
+    require(sent, "Failed to send user balance back to the user");
   }
+
+  
 
   // Add a `timeLeft()` view function that returns the time left before the deadline for the frontend
   function timeLeft() public view returns (uint256){
