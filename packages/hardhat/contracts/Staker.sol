@@ -81,9 +81,7 @@ contract Staker {
 
   // After some `deadline` allow anyone to call an `execute()` function
   // If the deadline has passed and the threshold is met, it should call `exampleExternalContract.complete{value: address(this).balance}()`
-  function execute() public stakeNotCompleted deadlineReached(true) {
-    uint256 contractBalance = address(this).balance;
-    require(contractBalance >= threshold, "threshold not met");
+  function execute() public stakeNotCompleted deadlineReached(true) thresholdReached(true) {
     // Execute the external contract, transfer all the balance to the contract
     // (bool sent, bytes memory data) = exampleExternalContract.complete{value: contractBalance}();
     (bool sent,) = address(exampleExternalContract).call{value: address(this).balance}(abi.encodeWithSignature("complete()"));
