@@ -5,7 +5,7 @@ const { ethers } = require("hardhat");
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  const chianId = await getChainId();
+  const chainId = await getChainId();
 
   await deploy("ExampleExternalContract", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
@@ -47,20 +47,20 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // todo: verification with etherscan
   // Verification
-  // if (chainId !== "31337") {
-  //   try {
-  //     console.log(" 🎫 Verifing Contract on Etherscan... ");
-  //     await sleep(5000); // wait 5 seconds for deployment to propagate
-  //     await run("verify:verify", {
-  //       address: ExampleExternalContract.address,
-  //       contract:
-  //         "contracts/ExampleExternalContract.sol:ExampleExternalContract",
-  //       contractArguments: [],
-  //     });
-  //   } catch (error) {
-  //     console.log("⚠️ Contract Verification Failed: ", error);
-  //   }
-  // }
+  if (chainId !== "31337") {
+    try {
+      console.log(" 🎫 Verifing Contract on Etherscan... ");
+      await sleep(5000); // wait 5 seconds for deployment to propagate
+      await run("verify:verify", {
+        address: ExampleExternalContract.address,
+        contract:
+          "contracts/ExampleExternalContract.sol:ExampleExternalContract",
+        contractArguments: [],
+      });
+    } catch (error) {
+      console.log("⚠️ Contract Verification Failed: ", error);
+    }
+  }
 };
 
 // function sleep(ms) {
