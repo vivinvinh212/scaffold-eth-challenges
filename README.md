@@ -2,4 +2,4 @@
 
 ## 🚩 Challenge 1: 🥩 Decentralized Staking App
 
-- Verfied Rinkeby contract: https://rinkeby.etherscan.io/address/0x1aFFCC6C49c31F01F66E7cBfBd23c36387b79798
+- Verfied Rinkeby contract: https://rinkeby.etherscan.io/address/0xbB46A9F3318a64d12650502228835c633E5928A2
